@@ -1,0 +1,29 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int get_random(int lb, int ub);
+int piggybank(int amount);
+
+int main() {
+	srand(time(0));
+	int i, amount;
+
+	for (i = 0; i < 20; i++) {
+		amount = get_random(1, 10);
+		printf("%d원을 저금하여 총 저금액은 %d\n", amount, piggybank(amount));
+	}
+}
+
+int get_random(int lb, int ub) {
+	int n = (rand() % ((ub - lb) + lb)) * 100  + 100;
+	return n;
+}
+
+int piggybank(int amount) {
+	static int total_amount = 0;
+	total_amount += amount;
+	return total_amount;
+
+}
