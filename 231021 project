@@ -1,0 +1,48 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int get_random(int lb, int ub);
+int print_array(int score[], int size);
+int rank_array(int score[], int size, int rank[]);
+
+int main() {
+	int score[10], ranking[10];
+	int i;(0));
+
+	srand(time(0));//	for (i = 0; i < 10; i++)
+		score[i] = get_random(0, 100);
+
+	rank_array(score, 10, ranking);
+	printf("점수 : ");
+	print_array(score, 10);
+	printf("등수 : ");
+	print_array(ranking, 10);
+
+	return 0;
+}
+
+//get_random함수 
+int get_random(int lb, int ub) {
+	return rand() % (ub - lb + 1) + lb;
+}
+
+//print_array함수 
+void print_array(int score[], int size) {
+	for (int i = 0; i < size; i++)
+		printf("%4d", score[i]);
+	putchar('\n');
+}
+
+//rank_array 함수
+void rank_array(int score[], int size, int rank[]) {
+	for (int i = 0; i < size; i++)
+		rank[i] = 1;						//1등이라고 생각.
+	for (int i = 0; i < size; i++) {
+		for (int j = 0; j < size; j++) {
+			if (score[j] > score[i])
+				rank[i]++;				//j보다 점수가 낮으니 등수는 더 떨어져야함(숫자가 커지기)
+		}
+	}
+}
