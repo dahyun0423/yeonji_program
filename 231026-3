@@ -1,0 +1,19 @@
+def is_prime(number):
+    if number <=1:
+        return False
+    for i in range (2,number):
+        if number % i ==0:
+            return False
+    return True
+#숫자를 입력받아 소수 여부 확인
+while True:
+    num = int(input("숫자를 입력하세요 : "))
+
+    if num<= 0:
+        print("프로그램 종료")
+        break
+
+    if is_prime(num):
+        print(f"{num}는 소수")
+    else :
+        print(f"{num}는 소수가 아님")
