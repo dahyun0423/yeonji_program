@@ -1,0 +1,19 @@
+def word_counter(sentence):
+    words = sentence.split()
+    word_count = {}
+
+    for word in words:
+        word = word.lower()
+        if word in word_count:
+            word_count[word] += 1
+        else :
+            word_count[word] = 1
+
+    return word_count
+
+input_sentence = input("문장 입력: ")
+
+result = word_counter(input_sentence)
+
+for word, count in result.items():
+    print("%s 단어는 %d번 나타납니다."%(word,count))
