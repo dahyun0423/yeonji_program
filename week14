@@ -1,0 +1,294 @@
+동적메모리 
+
+<배열>
+장점 : 구현이 간단하고 빨라
+단점 : 먼저 크기가 고정되고 동적으로 크기가 늘어나거나 줄어들 수가 없음.
+정적 배열의 크기는 프로그램을 짤 때 정해져
+동적 배열은 동적 메모리를 이용해 실행 시에 배열 크기를 정할 수 있는 것. 
+어쨌든 정했으면 크기가 늘어나지가 않아!
+
+리스트는 배열만큼 편하지는 않지만
+늘어나고 줄어들고가 간단하다. 
+
+//p.726
+구조는 링크와 노드로 되어있다. 
+링크가 갈고리다
+데이터 필드는 우리가 저장하고 싶은 데이터가 들어감.
+헤드 포인터 값이 없고 가르키는 것.
+null == 0 
+
+각각의 노드(홍길동, 김길동, 이길동...) 다음노드의 주소를 가르켜(갈고리) 00이라는 주소를 가지는 것은 없어서
+즉 끝낼때는 0을 씁니다. 그게 null 이구요
+얘는 stdio.h 에 정의가 되어있어요
+
+
+자기 참조 구조체
+포인터를 assign 한다는 뜻은 같은 것을 가르킨다는 뜻이다.
+똑같은 것을 가르킨다
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+//p.730 book.c
+#define S_SIZE 50
+
+typedef struct NODE {
+	char title[S_SIZE];
+	int year;
+	struct NODE* link;
+} NODE;
+
+int main() {
+	NODE* list = NULL;
+	NODE* prev = NULL, * p = NULL , * next = NULL;
+	char buffer[S_SIZE];
+	int year;
+
+	//연결 리스트에 정보를 입력한다.
+
+	while (1) {
+		printf("책의 제목을 입력하시오 : (종료하려면 엔터) ");
+		gets_s(buffer, S_SIZE - 1);
+		if (buffer[0] == '\0')
+			break;
+
+		p = (NODE*)malloc(sizeof(NODE));			//	p는 새로 할당받은 노드
+		strcpy(p->title, buffer);
+		printf("책의 출판 연도를 입력하시오 : ");
+		gets_s(buffer, S_SIZE - 1);
+		year = atoi(buffer);				//atoi 는 문자열 -> 정수로
+
+		p->year = year;
+		p->link = NULL;		//본 코드와 달라 (위치 이동 시킨거임) 
+
+		if (list == NULL)					//list는 처음 노드를 가리킴,  nulll이면 아무것도 없음 의미
+			list = p;							
+		else                                 
+			prev->link = p;			
+		prev = p;						//prev가 마지막 노드를 가르킴
+	}
+	printf("\n");
+
+	//연결 리스트에 들어 있는 정보를 모두 출력한다.
+	p = list;				//p가 첫번째 노드를 가르킴
+	while (p != NULL) {			//while (p) {
+		printf("[%s, %d]->", p->title, p->year);
+		p = p->link;
+	} 
+	printf("\n"); 
+	// 동적 할당을 반납합니다. 
+
+	p = list;
+	while (p) {
+		next = p->link;
+		printf("[%s, %d]->", p->title, p->year);
+		free(p);
+		p = next;
+	}
+	return 0;
+}
+
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+맨앞에 삽입하는 경우
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+//p.730 book.c
+// 수정 맨 앞에 추가하는 코드 
+#define S_SIZE 50
+
+typedef struct NODE {
+	char title[S_SIZE];
+	int year;
+	struct NODE* link;
+} NODE;
+
+int main() {
+	NODE* list = NULL;
+	NODE* p = NULL, * next = NULL;
+	char buffer[S_SIZE];
+	int year;
+
+	//연결 리스트에 정보를 입력한다.
+
+	while (1) {
+		printf("책의 제목을 입력하시오 : (종료하려면 엔터) ");
+		gets_s(buffer, S_SIZE - 1);
+		if (buffer[0] == '\0')
+			break;
+		//(1)
+
+		p = (NODE*)malloc(sizeof(NODE));			//	p는 새로 할당받은 노드
+		strcpy(p->title, buffer);
+		printf("책의 출판 연도를 입력하시오 : ");
+		gets_s(buffer, S_SIZE - 1);
+		year = atoi(buffer);				//atoi 는 문자열 -> 정수로
+		p->year = year;
+
+		//(2)
+		p->link = list;
+		//(3)
+		list = p;
+
+
+		//연결 리스트에 들어 있는 정보를 모두 출력한다.
+		p = list;				//p가 첫번째 노드를 가르킴
+		while (p != NULL) {			//while (p) {
+			printf("[%s, %d]->", p->title, p->year);
+			p = p->link;
+		}
+		printf("\n");
+		// 동적 할당을 반납합니다. 
+	}
+	p = list;
+	while (p) {
+		next = p->link;
+		printf("[%s, %d]->", p->title, p->year);
+		free(p);
+		p = next;
+	}
+	return 0;
+}
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+//p.742(9)
+
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+//p.742(8)
+// 자연수 입력(종료 -1): 10
+// 자연수 입력(종료 -1): 20
+// 자연수 입력(종료 -1): 30
+// 자연수 입력(종료 -1): -1
+// 10 -> 20->30->NULL		`// 리스트 끝이 나왔을때 printf("NULL\n"); 한 것임
+
+
+#define S_SIZE 50
+
+typedef struct NODE {
+	int num;
+	struct NODE* link;
+} NODE;
+
+int main() {
+	NODE* list = NULL;
+	NODE* prev = NULL, * p = NULL, * next = NULL;
+	int num;
+
+
+	//연결 리스트에 정보를 입력한다.
+
+	while (1) {
+		printf("양의 정수를 입력하시오(종료 -1) :  ");
+		scanf("%d", &num);
+		if (num == -1)
+			break;
+		//(1)
+
+		p = (NODE*)malloc(sizeof(NODE));			//	p는 새로 할당받은 노드
+		p->num = num;
+
+		if (list == NULL)// if (!list) == 리스트가 없으면 //list는 처음 노드를 가리킴,  nulll이면 아무것도 없음 의미
+			list = p;
+		else
+			prev->link = p;
+		p->link = NULL;
+		prev = p;
+	
+	}
+
+	//연결 리스트에 들어 있는 정보를 모두 출력한다.
+
+	p = list;//p가 첫번째 노드를 가르킴
+	while (p != NULL) {			//while (p) {
+		printf("%d->", p->num);
+		p = p->link;
+	}
+	printf("NULL\n");
+	
+	p = list;
+	while (p) {
+		next = p->link;
+		free(p);
+		p = next;
+	}
+	return 0;
+	
+}
+	
+
+ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+
+//p.742(9)
+
+
+#define _CRT_SECURE_NO_WARNINGS
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+//p.742(8)
+// 자연수 입력(종료 -1): 10
+// 자연수 입력(종료 -1): 20
+// 자연수 입력(종료 -1): 30
+// 자연수 입력(종료 -1): -1
+// 10 -> 20->30->NULL		`// 리스트 끝이 나왔을때 printf("NULL\n"); 한 것임
+
+
+#define S_SIZE 50
+
+typedef struct NODE {
+	int num;
+	struct NODE* link;
+} NODE;
+
+int main() {
+	NODE* list = NULL;
+	NODE* prev = NULL, * p = NULL, * next = NULL;
+	int num;
+
+
+	//연결 리스트에 정보를 입력한다.
+
+	while (1) {
+		printf("양의 정수를 입력하시오(종료 -1) :  ");
+		scanf("%d", &num);
+		if (num == -1)
+			break;
+		//(1)
+
+		p = (NODE*)malloc(sizeof(NODE));			//	p는 새로 할당받은 노드
+		p->num = num;
+
+		//if (list == NULL)// if (!list) == 리스트가 없으면 //list는 처음 노드를 가리킴,  nulll이면 아무것도 없음 의미
+		//	list = p;
+		//else
+		//	prev->link = p;
+		//prev = p;
+		p->link = list;
+		list = p;
+	}
+
+	//연결 리스트에 들어 있는 정보를 모두 출력한다.
+
+	p = list;//p가 첫번째 노드를 가르킴
+	while (p != NULL) {			//while (p) {
+		printf("%d->", p->num);
+		p = p->link;
+
+	}
+	printf("NULL\n");
+	
+	p = list;
+	while (p) {
+		next = p->link;
+		free(p);
+		p = next;
+	}
+	return 0;
+	
+}
